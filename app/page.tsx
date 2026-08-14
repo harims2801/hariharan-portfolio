@@ -383,7 +383,11 @@ export default function Home() {
             <h2>Professional credentials</h2>
           </div>
           <article className="certification-card">
-            <div className="certification-mark" aria-hidden="true">G</div>
+            <img
+              className="certification-badge"
+              src="/google-cloud-associate-badge.png"
+              alt="Google Cloud Certified Associate Cloud Engineer badge"
+            />
             <div>
               <p>{certification.issuer}</p>
               <h3>{certification.title}</h3>

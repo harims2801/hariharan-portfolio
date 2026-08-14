@@ -495,16 +495,14 @@ nav a:focus-visible {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
 }
 
-.certification-mark {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 1.35rem;
-  font-weight: 750;
+.certification-badge {
+  width: 64px;
+  height: 64px;
+  display: block;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: #ffffff;
 }
 
 .certification-card p {
