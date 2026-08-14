@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 
 type Theme = "dark" | "light";
+type FormState = "idle" | "sending" | "success" | "error";
 
 const stack = [
   { title: "CI/CD", detail: "GitHub Actions, GitLab, Jenkins" },
@@ -99,20 +100,28 @@ const experience = [
 
 const projects = [
   {
-    title: "PowerShell automation library",
+    title: "Developer Utility Toolbox",
     description:
-      "Public scripts and utilities focused on repeatable Windows administration and operational automation.",
-    href: "https://github.com/harims2801/Powershell",
+      "A growing collection of practical browser-based utilities for developers, designed to make everyday formatting, conversion and debugging tasks faster.",
+    tags: ["Next.js", "TypeScript", "Developer Tools"],
+    href: "https://github.com/harims2801/devtoolbox",
     label: "View repository",
   },
   {
-    title: "Web application",
+    title: "PocketOS",
     description:
-      "A public PHP web application demonstrating full-stack fundamentals and practical application structure.",
-    href: "https://github.com/harims2801/Webapp",
-    label: "View repository",
+      "A touchscreen operating experience for ESP32-S3 devices, bringing together apps, media controls and an extensible embedded UI.",
+    tags: ["ESP32-S3", "C++", "LVGL", "Embedded Systems"],
+    href: "https://github.com/harims2801/pocketos-releases",
+    label: "View releases",
   },
 ];
+
+const certification = {
+  title: "Google Cloud Certified — Associate Cloud Engineer",
+  issuer: "Google Cloud",
+  href: "https://www.credly.com/badges/d18bc837-94ab-468a-8b11-abe466758dd8",
+};
 
 function ExternalArrow() {
   return <span aria-hidden="true">↗</span>;
@@ -121,6 +130,7 @@ function ExternalArrow() {
 export default function Home() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [status, setStatus] = useState("");
+  const [formState, setFormState] = useState<FormState>("idle");
 
   useEffect(() => {
     const stored = window.localStorage.getItem("portfolio-theme");
@@ -136,18 +146,38 @@ export default function Home() {
     window.localStorage.setItem("portfolio-theme", nextTheme);
   };
 
-  const sendMessage = (event: FormEvent<HTMLFormElement>) => {
+  const sendMessage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const name = String(data.get("name") ?? "");
-    const email = String(data.get("email") ?? "");
-    const message = String(data.get("message") ?? "");
-    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    const form = event.currentTarget;
+    const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
 
-    setStatus("Opening your email application…");
-    window.location.href = `mailto:harims2801@gmail.com?subject=${encodeURIComponent(
-      `Portfolio enquiry from ${name}`,
-    )}&body=${encodeURIComponent(body)}`;
+    if (!endpoint) {
+      setFormState("error");
+      setStatus("The contact form is being configured. Please email me directly for now.");
+      return;
+    }
+
+    setFormState("sending");
+    setStatus("Sending your message…");
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error("Message submission failed");
+      }
+
+      form.reset();
+      setFormState("success");
+      setStatus("Thank you. Your message has been sent successfully.");
+    } catch {
+      setFormState("error");
+      setStatus("I couldn't send your message. Please email me directly instead.");
+    }
   };
 
   return (
@@ -188,6 +218,10 @@ export default function Home() {
             across GCP, AWS and Azure, with a focus on Kubernetes, observability,
             incident response and operational excellence.
           </p>
+          <p className="location-line">
+            <span aria-hidden="true">⌂</span> Chennai, India · Always learning new
+            technologies and interested in meaningful, challenging work.
+          </p>
           <div className="hero-actions">
             <a
               className="button primary"
@@ -216,7 +250,7 @@ export default function Home() {
           <div className="quick-facts" aria-label="Professional overview">
             <span><strong>12+</strong> years in IT</span>
             <span><strong>6+</strong> years in cloud &amp; SRE</span>
-            <span><strong>3</strong> cloud platforms</span>
+            <span><strong>120+</strong> production automations</span>
           </div>
         </div>
         <div className="hero-photo">
@@ -315,8 +349,12 @@ export default function Home() {
 
       <section className="section container" id="projects">
         <div className="section-heading">
-          <p className="section-label">Public work</p>
-          <h2>Projects</h2>
+          <p className="section-label">Personal projects</p>
+          <h2>Things I build outside work</h2>
+          <p>
+            Hands-on projects where I explore developer experience, embedded
+            systems and practical automation.
+          </p>
         </div>
         <div className="projects-grid">
           {projects.map((project) => (
@@ -324,6 +362,11 @@ export default function Home() {
               <div>
                 <h3>{project.title}</h3>
                 <p>{project.description}</p>
+                <div className="tags">
+                  {project.tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </div>
               </div>
               <a href={project.href} target="_blank" rel="noreferrer">
                 {project.label} <ExternalArrow />
@@ -333,8 +376,26 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section section-muted">
+      <section className="section section-muted" id="certifications">
         <div className="container">
+          <div className="section-heading">
+            <p className="section-label">Certification</p>
+            <h2>Professional credentials</h2>
+          </div>
+          <article className="certification-card">
+            <div className="certification-mark" aria-hidden="true">G</div>
+            <div>
+              <p>{certification.issuer}</p>
+              <h3>{certification.title}</h3>
+              <a href={certification.href} target="_blank" rel="noreferrer">
+                Verify credential <ExternalArrow />
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="section container">
           <div className="section-heading">
             <p className="section-label">Education</p>
             <h2>Academic background</h2>
@@ -362,7 +423,6 @@ export default function Home() {
               </div>
             </article>
           </div>
-        </div>
       </section>
 
       <section className="section container contact" id="contact">
@@ -370,8 +430,9 @@ export default function Home() {
           <p className="section-label">Get in touch</p>
           <h2>Let&apos;s connect</h2>
           <p>
-            I&apos;m open to conversations about SRE leadership, cloud
-            infrastructure, platform engineering and automation.
+            Based in Chennai, India. I enjoy learning emerging technologies and
+            taking on challenging work where reliability and automation create
+            meaningful impact.
           </p>
           <a href="mailto:harims2801@gmail.com">harims2801@gmail.com</a>
           <a
@@ -383,6 +444,8 @@ export default function Home() {
           </a>
         </div>
         <form onSubmit={sendMessage}>
+          <input className="honeypot" type="text" name="_gotcha" tabIndex={-1} autoComplete="off" />
+          <input type="hidden" name="_subject" value="New portfolio enquiry" />
           <label>
             Name
             <input name="name" type="text" autoComplete="name" required />
@@ -395,11 +458,11 @@ export default function Home() {
             Message
             <textarea name="message" rows={5} required />
           </label>
-          <button className="button primary" type="submit">
-            Send message
+          <button className="button primary" type="submit" disabled={formState === "sending"}>
+            {formState === "sending" ? "Sending…" : "Send message"}
           </button>
-          <p className="form-status" aria-live="polite">
-            {status || "This opens your email application with the message prepared."}
+          <p className={`form-status ${formState}`} aria-live="polite">
+            {status || "Your message will be sent securely from this page."}
           </p>
         </form>
       </section>
