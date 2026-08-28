@@ -212,7 +212,7 @@ export default function Home() {
             Senior SRE &amp; Cloud Automation Engineer
           </p>
           <h1>Hariharan Minnal Srinivasan</h1>
-          <h2>Site Reliability Engineer · Project Lead</h2>
+          <h2>Lead Site Reliability Engineer at Optum</h2>
           <p className="hero-description">
             I design reliable cloud infrastructure and production automation
             across GCP, AWS and Azure, with a focus on Kubernetes, observability,
