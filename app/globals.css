@@ -472,11 +472,17 @@ nav a:focus-visible {
   padding: 1.6rem;
 }
 
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
 .project-card a {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1.5rem;
   color: var(--accent);
   font-size: 0.82rem;
   font-weight: 650;
