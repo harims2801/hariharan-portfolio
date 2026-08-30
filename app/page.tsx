@@ -104,6 +104,8 @@ const projects = [
     description:
       "A growing collection of practical browser-based utilities for developers, designed to make everyday formatting, conversion and debugging tasks faster.",
     tags: ["Next.js", "TypeScript", "Developer Tools"],
+    liveHref: "https://devtools.hariharanms.in/",
+    liveLabel: "View live app",
     href: "https://github.com/harims2801/devtoolbox",
     label: "View repository",
   },
@@ -368,9 +370,16 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              <a href={project.href} target="_blank" rel="noreferrer">
-                {project.label} <ExternalArrow />
-              </a>
+              <div className="project-links">
+                {project.liveHref && (
+                  <a href={project.liveHref} target="_blank" rel="noreferrer">
+                    {project.liveLabel} <ExternalArrow />
+                  </a>
+                )}
+                <a href={project.href} target="_blank" rel="noreferrer">
+                  {project.label} <ExternalArrow />
+                </a>
+              </div>
             </article>
           ))}
         </div>
